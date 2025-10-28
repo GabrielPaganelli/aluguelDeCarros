@@ -1,6 +1,6 @@
 FILTER_CHOICES = {
     "CATEGORIES" : ("Todas as categorias", "Hatchback", "Sedan", "SUV", "Pick-Up", "Eletric"),
-    "BRANDS" : ("Todas as marcas", "Audi",  "BMW", "Chevrolet", "Fiat", "Ford", "Honda", "Hyundai", "Mercedes", "Nissan",  "Toyota", "Volkswagen"),
+    "BRANDS" : ("Todas as marcas", "Audi",  "BMW", "BYD", "Chevrolet", "Fiat", "Ford", "Honda", "Hyundai", "Jeep", "Mercedes", "Nissan",  "Toyota", "Volkswagen"),
     "PRICES_PER_DAY" : ("Sem limite", "$200", "$300", "$500", "$800", "$1000"),
     "YEAR" : ("Todos os anos", "2020", "2021", "2022", "2023", "2024", "2025", "2026")
 }
@@ -9,7 +9,7 @@ TREEVIEW_COLUMNS = ["ID", "Modelo", "Ano", "Placa", "Combustível", "Categoria",
 
 FORM_CHOICES = {
     "CATEGORIES" : ("Hatchback", "Sedan", "SUV", "Pick-Up", "Eletric"),
-    "BRANDS" : ("Audi",  "BMW", "Chevrolet", "Fiat", "Ford", "Honda", "Hyundai", "Mercedes", "Nissan",  "Toyota", "Volkswagen"),
+    "BRANDS" : ("Audi",  "BMW", "BYD", "Chevrolet", "Fiat", "Ford", "Honda", "Hyundai", "Jeep", "Mercedes", "Nissan", "Toyota", "Volkswagen"),
     "FUEL" : ("Gas", "Disel", "Flex", "Eletric"),
     "TRANSMISSION" : ("Manual", "Automatic")
 }
@@ -24,6 +24,8 @@ WEIGHT_OPTIONS = {
     },
     "BRANDS" : {
         "Toyota" : 10,
+        "BYD" : 70,
+        "Jeep" : 40,
         "Ford" : 5,
         "Fiat" : 10,
         "Chevrolet" : 15,

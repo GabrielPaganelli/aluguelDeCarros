@@ -49,6 +49,7 @@ class MainWindow:
     def createContextMenu(self, dbId=None):
         contextMenu = tk.Menu(self.root, tearoff=0)
         contextMenu.add_command(label="Excluir", command=lambda: [self.confirmDelete(dbId), self.defaultFilters(), self.loadData()] if dbId else None)
+        contextMenu.add_command(label="Editar", command=lambda: CarRegistration(self, car_data=dbId))
 
         return contextMenu
 

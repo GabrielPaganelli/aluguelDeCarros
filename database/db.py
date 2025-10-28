@@ -157,6 +157,51 @@ def search_cars(filters=None):
     conn.close()
     return results
 
+
+def get_car_by_id(carId):
+    conn = connect_db()
+    if conn is None:
+        messagebox.showerror("Erro", "Não foi possível conectar ao banco de dados.")
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM cars WHERE id = ?", (carId,))
+        car = cursor.fetchone()
+
+        return car
+    except sqlite3.OperationalError as e:
+        messagebox.showerror(f"Erro operacional: {e}")
+        return False
+    finally:
+        conn.close()
+    
+    
+def update_car(car_id, data):
+    conn = connect_db()
+    if conn is None:
+        messagebox.showerror("Erro", "Não foi possível conectar ao banco de dados.")
+        return False
+    
+    carPrice = generateCarPrice(
+        category=data[4],
+        brand=data[5],
+        fuel_type=data[3],
+        transmission=data[6],
+        year=data[1]
+    )
+        
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE cars SET model = ?, year = ?, license_plate = ?, fuel_type = ?, category = ?, brand = ?, transmission = ?, price_per_day = ?
+            WHERE id = ? ''', (*data, carPrice, car_id ))
+        conn.commit()
+        messagebox.showinfo("Sucesso", "Carro atualizado com sucesso.")
+    except sqlite3.OperationalError as e:
+        messagebox.showerror(f"Erro operacional: {e}")
+        return False
+
 def delete_car(carId):
     conn = connect_db()
     if conn is None:

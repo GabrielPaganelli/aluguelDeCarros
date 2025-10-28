@@ -5,15 +5,17 @@ from ttkbootstrap.constants import *
 
 from utils.treatment import str_to_int, validate_empty_fields
 from utils.interface import FORM_CHOICES
-from database.db import insert_car
+from database.db import insert_car, get_car_by_id, update_car
 
 class CarRegistration(tk.Toplevel):
-    def __init__(self, mainWindow):
+    def __init__(self, mainWindow, car_data=None):
         self.mainWindow = mainWindow
         self.parent = self.mainWindow.root
 
+        self.car_data = car_data
+
         super().__init__(self.parent)
-        self.title("Registro de Carro")
+        self.title("Editar Carro" if car_data else "Registro de Carro")
         self.resizable(False,False)
 
         self.vcmd_int = (self.register(lambda P: P.isdigit() or P == ""), "%P")
@@ -23,6 +25,9 @@ class CarRegistration(tk.Toplevel):
 
         self._createFrames()
         self._createWidgets()
+
+        if self.car_data:
+            self.loadCarData()
 
     def _createFrames(self):
         self.frame_main = tb.Frame(self, padding="10 10 10 10", relief="raised")
@@ -66,8 +71,26 @@ class CarRegistration(tk.Toplevel):
         self.transmissionVar = self.createLabelledComboboxes(self.frame_main, "Transmissão", FORM_CHOICES["TRANSMISSION"], 6)
 #_______
 
-        tb.Button(self.frame_main, text="Adiconar carro", command= lambda: self.loadEntry()).grid(column=1, row=7, sticky=(W, E, N, S), pady=5)
+        action_text = "Salvar Alterações" if self.car_data else "Adicionar Carro"
+        tb.Button(self.frame_main, text=action_text, command= lambda: self.loadEntry()).grid(column=1, row=7, sticky=(W, E, N, S), pady=5)
         tb.Button(self.frame_main, text="Cancelar", style="outline", command=self.destroy).grid(column=4, row=7, sticky=(E), pady=5)
+
+
+    def loadCarData(self):
+        car = get_car_by_id(self.car_data)
+        if not car:
+            tk.messagebox.showerror("Erro", "Não foi possível carregar os dados do carro.")
+            self.destroy()
+            return
+        
+        self.modelEntry.insert(0, car[1])
+        self.yearEntryRaw.insert(0, car[2])
+        self.plateEntry.insert(0, car[3])
+        self.fuelVar.set(car[4])
+        self.categoryVar.set(car[5])
+        self.brandVar.set(car[6])
+        self.transmissionVar.set(car[7])
+
 
 
     def loadEntry(self):
@@ -86,7 +109,7 @@ class CarRegistration(tk.Toplevel):
         validate = validate_empty_fields(forms)
 
         if validate:
-            carData = [
+            carDataForms = [
                 forms["model"],
                 forms["year"],
                 forms["plate"],
@@ -96,9 +119,11 @@ class CarRegistration(tk.Toplevel):
                 forms["transmission"]
             ]
 
-            insert = insert_car(carData)
-            if insert:
-                self.mainWindow.defaultFilters()
-                self.mainWindow.loadData()
+            if self.car_data:
+                update_car(self.car_data, carDataForms)
+            else:
+                insert_car(carDataForms)
 
+            self.mainWindow.defaultFilters()
+            self.mainWindow.loadData()
             self.destroy()
